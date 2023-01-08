@@ -59,10 +59,10 @@ contract Betting {
     fallback() external payable {}
 
     function makeBet(uint8 _playerId) public payable {
-        require(msg.value >= minBetAmount && msg.value <= maxBetAmount, "Krivi iznos");
-        require(oracle.getWinner() == 0, "Winner je proglasen");
-        require(_playerId == 1 || _playerId == 2, "Player ID mora bit 1 ili 2");
-        require(msg.sender != betMaker, "ovaj kaj radi okladu se htio kladiti");
+        require(msg.value >= minBetAmount && msg.value <= maxBetAmount);
+        require(oracle.getWinner() == 0);
+        require(_playerId == 1 || _playerId == 2);
+        require(msg.sender != betMaker);
 
         totalBetAmount += msg.value;
 
@@ -91,7 +91,7 @@ contract Betting {
     }
 
     function claimSuspendedBets() public {
-        require(suspended, "Betting is not suspended.");
+        require(suspended);
 
         for (uint i = 0; i < bets.length; i++) {
             Bet storage bet = bets[i];
@@ -102,7 +102,7 @@ contract Betting {
     }
 
     function claimWinningBets() public {
-        require(oracle.getWinner() != 0 && !suspended, "Match has not ended.");
+        require(oracle.getWinner() != 0 && !suspended);
 
         for (uint i = 0; i < bets.length; i++) {
             Bet storage bet = bets[i];
@@ -115,8 +115,8 @@ contract Betting {
     }
 
     function claimLosingBets() public {
-        require(msg.sender == betMaker, "Only the contract owner can claim losing bets.");
-        require(oracle.getWinner() != 0, "Match has not ended.");
+        require(msg.sender == betMaker);
+        require(oracle.getWinner() != 0);
         uint totalToPay = 0;
 
         for (uint i = 0; i < bets.length; i++) {

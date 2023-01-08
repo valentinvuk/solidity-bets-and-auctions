@@ -41,7 +41,7 @@ contract DutchAuction is Auction {
     /// bid that is higher than the current prices.
     /// This method should be only called while the auction is active.
     function bid() public payable {
-        require(time() < auctionEnd, "Auction has already ended.");
+        require(time() < auctionEnd);
         uint currentPrice = initialPrice - ((time() - auctionStart) * priceDecrement);
         require(msg.value >= currentPrice);
         require(outcome == Outcome.NOT_FINISHED);
@@ -55,7 +55,7 @@ contract DutchAuction is Auction {
     }
 
     function enableRefunds() public {
-        require(msg.sender == sellerAddress || msg.sender == judgeAddress, "Only the seller or the judge can enable refunds.");
+        require(msg.sender == sellerAddress || msg.sender == judgeAddress);
 
         outcome = Outcome.NOT_SUCCESSFUL;
     }

@@ -30,11 +30,11 @@ contract EnglishAuction is Auction {
     }
 
     function bid() public payable {
-        require(msg.value > (highestBid + minimumPriceIncrement) && msg.value >= initialPrice);
+        require(msg.value >= (highestBid + minimumPriceIncrement) && msg.value >= initialPrice);
         require(time() < lastBidTimestamp + biddingPeriod);
 
-        if (highestBidder != address(0)) {
-            payable(highestBidder).transfer(highestBid);
+        if (highestBidderAddress != address(0)) {
+            payable(highestBidderAddress).transfer(highestBid);
         }
 
         highestBid = msg.value;
@@ -43,7 +43,7 @@ contract EnglishAuction is Auction {
     }
 
     function getHighestBidder() override public returns (address) {
-        return highestBidder == address(0) ? address(0) : highestBidderAddress;
+        return (highestBidderAddress == address(0) || time() < lastBidTimestamp + biddingPeriod) ? address(0) : highestBidderAddress;
     }
 
     function enableRefunds() public {

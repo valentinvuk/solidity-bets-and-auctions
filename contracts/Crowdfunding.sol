@@ -14,7 +14,7 @@ contract Crowdfunding {
     uint256 public goal;
     uint256 public endTimestamp;
     uint256 public totalInvested;
-    mapping (address => uint256) public investments;
+    mapping(address => uint256) public investments;
     bool public isCompleted;
 
     constructor(
@@ -24,7 +24,8 @@ contract Crowdfunding {
         uint256 _endTimestamp
     ) {
         owner = (_owner == address(0) ? msg.sender : _owner);
-        timer = _timer; // Not checking if this is correctly injected.
+        timer = _timer;
+        // Not checking if this is correctly injected.
         goal = _goal;
         endTimestamp = _endTimestamp;
         totalInvested = 0;
@@ -32,23 +33,23 @@ contract Crowdfunding {
     }
 
     function invest() public payable {
-        require(!isCompleted, "The crowdfunding campaign is already completed");
-        require(timer.getTime() <= endTimestamp, "The crowdfunding campaign has already ended");
+        require(!isCompleted);
+        require(timer.getTime() <= endTimestamp);
         investments[msg.sender] += msg.value;
         totalInvested += msg.value;
         isCompleted = totalInvested >= goal ? true : false;
     }
 
     function claimFunds() public {
-        require(isCompleted, "The crowdfunding campaign has not yet reached its goal");
-        require(timer.getTime() > endTimestamp, "The crowdfunding campaign has not yet ended");
-        require(msg.sender == owner, "Only the owner of the contract can claim the funds");
+        require(isCompleted);
+        require(time() > endTimestamp);
+        require(msg.sender == owner);
         payable(msg.sender).transfer(totalInvested);
     }
 
     function refund() public {
-        require(!isCompleted, "The crowdfunding campaign is still active");
-        require(timer.getTime() > endTimestamp, "The crowdfunding campaign has not yet ended");
+        require(!isCompleted);
+        require(time() > endTimestamp);
         uint256 amountToRefund = investments[msg.sender];
         investments[msg.sender] = 0;
         totalInvested -= amountToRefund;
